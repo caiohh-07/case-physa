@@ -34,18 +34,18 @@ class GameBase:
         if pos_dado > self.board.size:
             pos_dado = pos_antes  # fica na mesma casa
 
-        pos_final = self.board.aplicar_transicao(pos_dado)
+        pos_final = self.board.aplicar_transicao(str(pos_dado))
 
         # Atualiza posição do jogador
-        jogador.mover_para(pos_final)
+        jogador.mover_para(int(pos_final))
 
         # Define evento para o histórico
-        if pos_final > pos_dado:
+        if self.board.eh_escada(str(pos_dado)):
             evento = "escada"
-        elif pos_final < pos_dado:
+        elif self.board.eh_cobra(str(pos_dado)):
             evento = "cobra"
         else:
-            evento = "normal"
+            evento = "normal"        
 
         # Registra o evento
         self.historico.append({
