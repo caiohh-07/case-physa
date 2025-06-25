@@ -1,10 +1,13 @@
 import sys
+import pandas as pd
 from core.board import Board
 
 from modes.game_standard import GameStandard
 from modes.game_conditional_climb import GameCoditionalClimb
 from modes.game_immune_first_snake import GameImmuneFirstSnake
 #from modes.game_variable_start import GameVariableStart
+
+import re
 
 def escolher_modo():
     print("Escolha o modo de jogo:")
@@ -24,8 +27,18 @@ def main():
     if modo == "1":
         jogo = GameStandard(board)
         vencedor = jogo.jogar()
+        df = pd.DataFrame()
+        for n in range(10000):
 
-        print_historico(jogo)
+            hist = pd.DataFrame(print_historico(jogo))
+            hist['simulacao'] = n
+            df = pd.concat([df, hist])
+            print(n)
+        #df.to_excel('output.xlsx', index=False)
+        
+        #dados = [parse_event_line(hist[0])]
+        #print(dados)
+
         print(f"\nVencedor: {vencedor.nome} chegou na casa {vencedor.posicao}!")
 
     elif modo == "2":
@@ -66,13 +79,14 @@ def main():
         sys.exit(1)
 
 def print_historico(jogo):
-    print("\nHistórico de jogadas:")
-    for evento in jogo.historico:
-        print(
-            f"Turno {evento['turno']:>3} | {evento['jogador']}: "
-            f"Dado={evento['dado']} | Posição {evento['posicao_antes']} -> {evento['posicao_final']} "
-            f"Evento: {evento['evento']}"
-        )
+    # print("\nHistórico de jogadas:")
+    # for evento in jogo.historico:
+    #     print(
+    #         f"Turno {evento['turno']:>3} | {evento['jogador']}: "
+    #         f"Dado={evento['dado']} | Posição {evento['posicao_antes']} -> {evento['posicao_final']} "
+    #         f"Evento: {evento['evento']}"
+    #     )
+    return jogo.historico
 
 if __name__ == "__main__":
     main()
