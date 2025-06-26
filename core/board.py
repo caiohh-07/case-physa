@@ -21,7 +21,7 @@ class Board:
         with open(path, "r", encoding="utf-8") as f:
             return json.load(f)
 
-    def aplicar_transicao(self, pos: int) -> int:
+    def aplicar_transicao(self, pos: str) -> int:
         """
         Verificar se, ao chegar numa determinada casa do tabuleiro, o
         jogador deve subir uma escada, descer uma cobra ou permanecer na

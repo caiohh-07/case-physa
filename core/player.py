@@ -1,5 +1,5 @@
 class Player:
-    def __init__(self, nome: str, posicao_inicial: int = 1):
+    def __init__(self, nome: str, posicao_inicial: int = 1, imune_primeira_cobra: bool = False):
         """
         Inicializa um jogador.
 
@@ -9,7 +9,7 @@ class Player:
         """
         self.nome = nome
         self.posicao = posicao_inicial
-        self.imune_primeira_cobra = False  # Inicialmente sem imunidade; modos especiais definem isso
+        self.imune_primeira_cobra = imune_primeira_cobra  # Inicialmente sem imunidade; modos especiais definem isso
 
     def mover_para(self, nova_posicao: int):
         """

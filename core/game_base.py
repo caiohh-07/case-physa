@@ -16,6 +16,7 @@ class GameBase:
             Player("Jogador 2")
         ]
         self.turno = 0
+        self.rodada = 0
         self.historico = []  # Lista de eventos detalhados (dicionários)
 
     def jogar_turno(self, jogador: Player):
@@ -49,6 +50,7 @@ class GameBase:
 
         # Registra o evento
         self.historico.append({
+            "rodada": self.rodada,
             "turno": self.turno,
             "jogador": jogador.nome,
             "posicao_antes": pos_antes,
@@ -84,6 +86,11 @@ class GameBase:
             jogador_atual = self.jogadores[indice_jogador]
             self.jogar_turno(jogador_atual)
             vencedor = self.verificar_vencedor()
+
+            # Incrementa a rodada a cada ciclo completo de jogadores
+            if indice_jogador == len(self.jogadores) - 1:
+                self.rodada += 1
+
             indice_jogador = (indice_jogador + 1) % len(self.jogadores)
 
         # Marca o vencedor no histórico (última jogada)

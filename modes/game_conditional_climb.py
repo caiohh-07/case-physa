@@ -1,5 +1,6 @@
 import random
 from core.game_base import GameBase
+from core.utils import rolar_dado
 
 class GameCoditionalClimb(GameBase):
     """
@@ -13,7 +14,7 @@ class GameCoditionalClimb(GameBase):
         """
         self.turno += 1
         pos_antes = jogador.posicao
-        dado = random.randint(1, 6)
+        dado = rolar_dado()
         pos_dado = pos_antes + dado
 
         if pos_dado > self.board.size:
@@ -21,7 +22,7 @@ class GameCoditionalClimb(GameBase):
 
         # Aplica regra de escada com 50% de chance
         if self.board.eh_escada(str(pos_dado)):
-            subir = random.random() < 0.5  # 50% de chance
+            subir = random.random() > 0.5  # 50% de chance
             if subir:
                 pos_final = self.board.ladders[str(pos_dado)]
                 evento = "subiu_escada"
@@ -39,6 +40,7 @@ class GameCoditionalClimb(GameBase):
 
         # Registra evento
         self.historico.append({
+            "rodada": self.rodada,
             "turno": self.turno,
             "jogador": jogador.nome,
             "posicao_antes": pos_antes,

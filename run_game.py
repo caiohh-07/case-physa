@@ -1,5 +1,6 @@
 import sys
 import pandas as pd
+from tqdm.auto import trange  
 from core.board import Board
 
 from modes.game_standard import GameStandard
@@ -25,21 +26,24 @@ def main():
     modo = escolher_modo()
 
     if modo == "1":
-        jogo = GameStandard(board)
-        vencedor = jogo.jogar()
         df = pd.DataFrame()
-        for n in range(10000):
+        for n in trange(10_000, desc="Simulando jogos", unit=" jogo"):
+            jogo = GameStandard(board)
+            vencedor = jogo.jogar()
+            print(f"\nSimulacao {n} - Vencedor: {vencedor.nome} chegou na casa {vencedor.posicao}!")
 
             hist = pd.DataFrame(print_historico(jogo))
             hist['simulacao'] = n
             df = pd.concat([df, hist])
-            print(n)
+            if n == 2:
+                break
         #df.to_excel('output.xlsx', index=False)
+        #print(df.columns)
         
         #dados = [parse_event_line(hist[0])]
         #print(dados)
 
-        print(f"\nVencedor: {vencedor.nome} chegou na casa {vencedor.posicao}!")
+        
 
     elif modo == "2":
         jogo = GameCoditionalClimb(board)
@@ -79,13 +83,13 @@ def main():
         sys.exit(1)
 
 def print_historico(jogo):
-    # print("\nHistórico de jogadas:")
-    # for evento in jogo.historico:
-    #     print(
-    #         f"Turno {evento['turno']:>3} | {evento['jogador']}: "
-    #         f"Dado={evento['dado']} | Posição {evento['posicao_antes']} -> {evento['posicao_final']} "
-    #         f"Evento: {evento['evento']}"
-    #     )
+    print("\nHistórico de jogadas:")
+    for evento in jogo.historico:
+        print(
+            f"Rodada {evento['rodada']:>3} | Turno {evento['turno']:>3} | {evento['jogador']}: "
+            f"Dado={evento['dado']} | Posição {evento['posicao_antes']} -> {evento['posicao_final']} "
+            f"Evento: {evento['evento']}"
+        )
     return jogo.historico
 
 if __name__ == "__main__":
