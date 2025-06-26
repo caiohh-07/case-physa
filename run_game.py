@@ -30,13 +30,11 @@ def main():
         for n in trange(10_000, desc="Simulando jogos", unit=" jogo"):
             jogo = GameStandard(board)
             vencedor = jogo.jogar()
-            print(f"\nSimulacao {n} - Vencedor: {vencedor.nome} chegou na casa {vencedor.posicao}!")
+            #print(f"\nSimulacao {n} - Vencedor: {vencedor.nome} chegou na casa {vencedor.posicao}!")
 
             hist = pd.DataFrame(print_historico(jogo))
             hist['simulacao'] = n
             df = pd.concat([df, hist])
-            if n == 2:
-                break
         #df.to_excel('output.xlsx', index=False)
         #print(df.columns)
         
@@ -64,12 +62,12 @@ def main():
 
         for res in jogo_var_start.resultados:
             print(f"\nJogador 2 começou na posição {res['posicao_inicial_jogador_2']} - Vencedor: {res['vencedor']}")
-            for evento in res["historico"]:
-                print(
-                    f"Rodada {evento['rodada']:>3} | Turno {evento['turno']:>3} | {evento['jogador']}: "
-                    f"Dado={evento['dado']} | Posição {evento['posicao_antes']} -> {evento['posicao_final']} "
-                    f"Evento: {evento['evento']}"
-                )
+            # for evento in res["historico"]:
+            #     print(
+            #         f"Rodada {evento['rodada']:>3} | Turno {evento['turno']:>3} | {evento['jogador']}: "
+            #         f"Dado={evento['dado']} | Posição {evento['posicao_antes']} -> {evento['posicao_final']} "
+            #         f"Evento: {evento['evento']}"
+            #     )
 
 
     elif modo == "4":
@@ -84,13 +82,13 @@ def main():
         sys.exit(1)
 
 def print_historico(jogo):
-    print("\nHistórico de jogadas:")
-    for evento in jogo.historico:
-        print(
-            f"Rodada {evento['rodada']:>3} | Turno {evento['turno']:>3} | {evento['jogador']}: "
-            f"Dado={evento['dado']} | Posição {evento['posicao_antes']} -> {evento['posicao_final']} "
-            f"Evento: {evento['evento']}"
-        )
+    # print("\nHistórico de jogadas:")
+    # for evento in jogo.historico:
+    #     print(
+    #         f"Rodada {evento['rodada']:>3} | Turno {evento['turno']:>3} | {evento['jogador']}: "
+    #         f"Dado={evento['dado']} | Posição {evento['posicao_antes']} -> {evento['posicao_final']} "
+    #         f"Evento: {evento['evento']}"
+    #     )
     return jogo.historico
 
 if __name__ == "__main__":
