@@ -6,7 +6,7 @@ from core.board import Board
 from modes.game_standard import GameStandard
 from modes.game_conditional_climb import GameCoditionalClimb
 from modes.game_immune_first_snake import GameImmuneFirstSnake
-#from modes.game_variable_start import GameVariableStart
+from modes.game_variable_start import GameVariableStart
 
 import re
 
@@ -52,24 +52,25 @@ def main():
         print_historico(jogo)
         print(f"\nVencedor: {vencedor.nome} chegou na casa {vencedor.posicao}!")
 
-    # elif modo == "3":
-    #     # Para o modo 3 precisamos pedir a lista de posições iniciais e número de simulações
-    #     posicoes_input = input("Digite as posições iniciais do jogador 2, separadas por vírgula (ex: 0,5,10): ")
-    #     posicoes = [int(p.strip()) for p in posicoes_input.split(",") if p.strip().isdigit()]
+    elif modo == "3":
+        # Lista fixa de posições iniciais do Jogador 2 (pode ser alterada conforme desejar)
+        posicoes = [i for i in range(1,37)]
 
-    #     n_sim = input("Digite o número de simulações por posição inicial: ")
-    #     n_sim = int(n_sim) if n_sim.isdigit() else 10
+        # Filtra posições inválidas (fora do tabuleiro)
+        posicoes = [p for p in posicoes if 1 <= p <= board.size]
 
-    #     modo3 = GameVariableStart(
-    #         board_path=caminho_tabuleiro,
-    #         posicoes_iniciais=posicoes,
-    #         n_simulacoes=n_sim
-    #     )
-    #     modo3.rodar_simulacoes()
+        jogo_var_start = GameVariableStart(board, posicoes[0])
+        jogo_var_start.jogar()
 
-    #     print("\nResultados das simulações:")
-    #     for res in modo3.obter_resultados():
-    #         print(f"Simulação {res['simulacao_id']}: Jogador 2 começa na casa {res['posicao_inicial_jogador_2']} — Vencedor: {res['vencedor']} em {res['turnos']} turnos")
+        for res in jogo_var_start.resultados:
+            print(f"\nJogador 2 começou na posição {res['posicao_inicial_jogador_2']} - Vencedor: {res['vencedor']}")
+            for evento in res["historico"]:
+                print(
+                    f"Rodada {evento['rodada']:>3} | Turno {evento['turno']:>3} | {evento['jogador']}: "
+                    f"Dado={evento['dado']} | Posição {evento['posicao_antes']} -> {evento['posicao_final']} "
+                    f"Evento: {evento['evento']}"
+                )
+
 
     elif modo == "4":
         jogo = GameImmuneFirstSnake(board)
