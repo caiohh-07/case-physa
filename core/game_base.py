@@ -32,8 +32,8 @@ class GameBase:
         pos_dado = pos_antes + dado
 
         # Não ultrapassar tamanho do tabuleiro
-        if pos_dado > self.board.size:
-            pos_dado = pos_antes  # fica na mesma casa
+        #if pos_dado > self.board.size:
+        #    pos_dado = pos_antes  # fica na mesma casa
 
         pos_final = self.board.aplicar_transicao(str(pos_dado))
 
@@ -68,7 +68,7 @@ class GameBase:
             Player ou None: Jogador vencedor ou None se nenhum venceu ainda.
         """
         for jogador in self.jogadores:
-            if jogador.posicao == self.board.size:
+            if jogador.posicao >= self.board.size:
                 return jogador
         return None
 
