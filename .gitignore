@@ -2,3 +2,4 @@
 venv_physa/
 */__pycache__/*
 test_*
+*.xlsx

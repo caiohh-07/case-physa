@@ -32,17 +32,6 @@ def main():
     caminho_tabuleiro = "config/tabuleiro.json"
     board = Board(caminho_tabuleiro)
     modo = ""
-    print("""   _________         _________
-  /         \       /         \   PHYSA.AI
- /  /~~~~~\  \     /  /~~~~~\  \ 
- |  |     |  |     |  |     |  |
- |  |     |  |     |  |     |  |
- |  |     |  |     |  |     |  |         /
- |  |     |  |     |  |     |  |       //
-(o  o)    \  \_____/  /     \  \_____/ /
- \__/      \         /       \        /
-  |         ~~~~~~~~~         ~~~~~~~~
-  ^""")
     
     while modo != "0":
 
@@ -50,7 +39,7 @@ def main():
 
         if modo == "1" or modo == "2":
             df = pd.DataFrame()
-            for n in trange(1_000, desc="Simulando padrão", unit=" jogo"):
+            for n in trange(10_000, desc="Simulando padrão", unit=" jogo"):
                 jogo = GameStandard(board)
                 vencedor = jogo.jogar()
                 #print(f"\nSimulacao {n} - Vencedor: {vencedor.nome} chegou ou passou da última posição do tabuleiro!")
@@ -58,9 +47,7 @@ def main():
                 hist = pd.DataFrame(print_historico(jogo))
                 hist['simulacao'] = n
                 df = pd.concat([df, hist])
-            #df.to_excel('output.xlsx', index=False)
-            #print(df.columns)
-            #print(df.tail())
+
             if modo == "1":
                 vitorias_jogador1 = df[df['vencedor'] == 'Jogador 1'].shape[0]
                 total_jogos = df['simulacao'].max() + 1
@@ -69,11 +56,14 @@ def main():
             else:
                 numero_cobras = df.value_counts("evento")
                 total_jogos = df['simulacao'].max() + 1
-                print(f"Resposta: {numero_cobras.iloc[1]/total_jogos}")       
+                
+                print(f"Resposta: {numero_cobras.iloc[1]/total_jogos}")
+
+            _ = input("\nPressione Enter para continuar...")       
 
         elif modo == "3":
             df = pd.DataFrame()
-            for n in trange(1_000, desc="Simulando escadas com 50% de chance de subir", unit=" jogo"):
+            for n in trange(10_000, desc="Simulando escadas com 50% de chance de subir", unit=" jogo"):
                 jogo = GameCoditionalClimb(board)
                 vencedor = jogo.jogar()
                 #print(f"\nSimulacao {n} - Vencedor: {vencedor.nome} chegou ou passou da última posição do tabuleiro!")
@@ -82,14 +72,12 @@ def main():
                 hist['simulacao'] = n
                 df = pd.concat([df, hist])
 
-            #df.to_excel('output.xlsx', index=False)
             turnos_por_simulacao = df.groupby("simulacao")["turno"].count().reset_index()
             qtd_total_turnos = turnos_por_simulacao['turno'].sum()
             qtd_jogos = turnos_por_simulacao['simulacao'].max() + 1
             print(f"Resposta: {qtd_total_turnos/qtd_jogos}")
 
-            #print(df.columns)
-            #print(df.tail())
+            _ = input("\nPressione Enter para continuar...") 
 
         elif modo == "4":
             # Lista fixa de posições iniciais do Jogador 2 (pode ser alterada conforme desejar)
@@ -107,7 +95,6 @@ def main():
                     hist['simulacao'] = n
                     hist['posicao_inicial_jogador_2'] = posicao
                     df = pd.concat([df, hist])
-            #df.to_excel('output.xlsx', index=False)
             
             # Filtra apenas as linhas onde o jogador 1 foi o vencedor
             vitorias_j1 = df[df["vencedor"] == "Jogador 1"]
@@ -122,17 +109,13 @@ def main():
             resposta = contagem.iloc[0]['posicao_inicial_jogador_2'].astype(str)
 
             print(f"Resposta: A posição incial do jogador 2 deveria ser {resposta}")
-            
 
-            # Exibe o resultado
-            contagem.to_excel('output.xlsx', index=False)
-
-                
+            _ = input("\nPressione Enter para continuar...")                
 
 
         elif modo == "5":
             df = pd.DataFrame()
-            for n in trange(1_000, desc="Simulando imunidade à primeira cobra", unit=" jogo"):
+            for n in trange(10_000, desc="Simulando imunidade à primeira cobra", unit=" jogo"):
 
                 jogo = GameImmuneFirstSnake(board)
                 vencedor = jogo.jogar()
@@ -147,10 +130,7 @@ def main():
             probabilidade_vitoria_jogador1 = vitorias_jogador1 / total_jogos
             print(f"Resposta: {probabilidade_vitoria_jogador1}")
 
-            #df.to_excel('output.xlsx', index=False)
-            #print(df.columns)
-            #print(df.tail())
-
+            _ = input("\nPressione Enter para continuar...") 
 
         elif modo == "0":
             print("Saindo.")
@@ -171,4 +151,15 @@ def print_historico(jogo):
     return jogo.historico
 
 if __name__ == "__main__":
+    print("""   _________         _________
+  /         \       /         \   PHYSA.AI
+ /  /~~~~~\  \     /  /~~~~~\  \ 
+ |  |     |  |     |  |     |  |
+ |  |     |  |     |  |     |  |
+ |  |     |  |     |  |     |  |         /
+ |  |     |  |     |  |     |  |       //
+(o  o)    \  \_____/  /     \  \_____/ /
+ \__/      \         /       \        /
+  |         ~~~~~~~~~         ~~~~~~~~
+  ^""")
     main()
