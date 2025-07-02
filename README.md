@@ -16,6 +16,7 @@ O projeto segue princípios de engenharia de software: modularização, separaç
 ## 2. ▶️ Executar o jogo
 ```bash
 python run_game.py
+```
 
 ---
 
@@ -28,6 +29,7 @@ python run_game.py
 
 ```bash
 pip install -r requirements.txt
+```
 
 ---
 
