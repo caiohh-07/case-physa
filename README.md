@@ -63,37 +63,39 @@ pip install -r requirements.txt
 
 ## 5. 🧱 Explicação das Classes
 
-### `Board` (em `core/board.py`)
+### a) Core
+#### `Board` (em `core/board.py`)
 Responsável por representar o tabuleiro:
 - Carrega o JSON com tamanho, cobras e escadas.
 - Aplica as transições de casa (ex: subir uma escada, descer por uma cobra).
 - Informa se uma posição tem escada ou cobra.
 
-### `Player` (em `core/player.py`)
+#### `Player` (em `core/player.py`)
 Modela os jogadores:
 - Armazena nome e posição atual.
 - Permite movimentação com `mover_para()`.
 
-### `GameBase` (em `core/game_base.py`)
+#### `GameBase` (em `core/game_base.py`)
 Contém a lógica comum a todos os modos de jogo:
 - Gerencia os turnos, rodada, jogadores e histórico.
 - Executa a lógica de movimentação e verificação de vitória.
 
-### `GameStandard` (em `modes/game_standard.py`)
-Modo padrão de jogo, sem regras especiais.
-
-### `GameCoditionalClimb` (em `modes/game_conditional_climb.py`)
-Escadas só funcionam com 50% de chance.
-
-### `GameImmuneFirstSnake` (em `modes/game_immune_first_snake.py`)
-Cada jogador ignora a **primeira cobra** em que cair.
-
-### `GameVariableStart` (em `modes/game_variable_start.py`)
-Executa jogos simulando diferentes **posições iniciais do Jogador 2**.
-
-### `utils.py`
+#### `utils.py`
 Contém utilitários como:
 - `rolar_dado()`: simula o lançamento de um dado.
 - Outras funções auxiliares para manipulação e análise dos dados.
+
+### b) Modes
+#### `GameStandard` (em `modes/game_standard.py`)
+Modo padrão de jogo, sem regras especiais.
+
+#### `GameCoditionalClimb` (em `modes/game_conditional_climb.py`)
+Escadas só funcionam com 50% de chance.
+
+#### `GameImmuneFirstSnake` (em `modes/game_immune_first_snake.py`)
+Cada jogador ignora a **primeira cobra** em que cair.
+
+#### `GameVariableStart` (em `modes/game_variable_start.py`)
+Executa jogos simulando diferentes **posições iniciais do Jogador 2**.
 
 
