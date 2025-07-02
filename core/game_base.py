@@ -3,7 +3,7 @@ from core.player import Player
 from core.utils import rolar_dado
 
 class GameBase:
-    def __init__(self, board: Board):
+    def __init__(self, board: Board, posicao_inicial_jogador2: int = 1):
         """
         Inicializa o jogo base com o tabuleiro e jogadores.
 
@@ -11,9 +11,10 @@ class GameBase:
             board (Board): Instância do tabuleiro.
         """
         self.board = board
+        self.posicao_inicial_jogador2 = posicao_inicial_jogador2
         self.jogadores = [
             Player("Jogador 1"),
-            Player("Jogador 2")
+            Player("Jogador 2", posicao_inicial_jogador2)
         ]
         self.turno = 0
         self.rodada = 0
@@ -31,10 +32,7 @@ class GameBase:
         dado = rolar_dado()
         pos_dado = pos_antes + dado
 
-        # Não ultrapassar tamanho do tabuleiro
-        #if pos_dado > self.board.size:
         #    pos_dado = pos_antes  # fica na mesma casa
-
         pos_final = self.board.aplicar_transicao(str(pos_dado))
 
         # Atualiza posição do jogador
@@ -52,6 +50,7 @@ class GameBase:
         self.historico.append({
             "rodada": self.rodada,
             "turno": self.turno,
+            "posicao_inicial_jogador2": self.posicao_inicial_jogador2,
             "jogador": jogador.nome,
             "posicao_antes": pos_antes,
             "dado": dado,

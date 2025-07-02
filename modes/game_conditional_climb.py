@@ -17,9 +17,6 @@ class GameCoditionalClimb(GameBase):
         dado = rolar_dado()
         pos_dado = pos_antes + dado
 
-        if pos_dado > self.board.size:
-            pos_dado = pos_antes  # Não ultrapassa o tabuleiro
-
         # Aplica regra de escada com 50% de chance
         if self.board.eh_escada(str(pos_dado)):
             subir = random.random() > 0.5  # 50% de chance

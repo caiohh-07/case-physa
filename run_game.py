@@ -11,7 +11,7 @@ from modes.game_variable_start import GameVariableStart
 import re
 
 def escolher_modo():
-    print("Digite o número da pergunta a ser respondida:")
+    print("\nDigite o número da pergunta a ser respondida:")
     print("1 - Num jogo de duas pessoas, qual é a probabilidade do jogador que começa o jogo vencer?")
     print("2 - Em média, em quantas cobras os jogadores caem a cada jogo?")
     print("3 - Se cada vez que um jogador cair em uma escada houver apenas 50% de chance de\n"
@@ -32,6 +32,17 @@ def main():
     caminho_tabuleiro = "config/tabuleiro.json"
     board = Board(caminho_tabuleiro)
     modo = ""
+    print("""   _________         _________
+  /         \       /         \   PHYSA.AI
+ /  /~~~~~\  \     /  /~~~~~\  \ 
+ |  |     |  |     |  |     |  |
+ |  |     |  |     |  |     |  |
+ |  |     |  |     |  |     |  |         /
+ |  |     |  |     |  |     |  |       //
+(o  o)    \  \_____/  /     \  \_____/ /
+ \__/      \         /       \        /
+  |         ~~~~~~~~~         ~~~~~~~~
+  ^""")
     
     while modo != "0":
 
@@ -39,7 +50,7 @@ def main():
 
         if modo == "1" or modo == "2":
             df = pd.DataFrame()
-            for n in trange(10_000, desc="Simulando padrão", unit=" jogo"):
+            for n in trange(1_000, desc="Simulando padrão", unit=" jogo"):
                 jogo = GameStandard(board)
                 vencedor = jogo.jogar()
                 #print(f"\nSimulacao {n} - Vencedor: {vencedor.nome} chegou ou passou da última posição do tabuleiro!")
@@ -49,11 +60,20 @@ def main():
                 df = pd.concat([df, hist])
             #df.to_excel('output.xlsx', index=False)
             #print(df.columns)
-            #print(df.tail())       
+            #print(df.tail())
+            if modo == "1":
+                vitorias_jogador1 = df[df['vencedor'] == 'Jogador 1'].shape[0]
+                total_jogos = df['simulacao'].max() + 1
+                probabilidade_vitoria_jogador1 = vitorias_jogador1 / total_jogos
+                print(f"Resposta: {probabilidade_vitoria_jogador1}")
+            else:
+                numero_cobras = df.value_counts("evento")
+                total_jogos = df['simulacao'].max() + 1
+                print(f"Resposta: {numero_cobras.iloc[1]/total_jogos}")       
 
         elif modo == "3":
             df = pd.DataFrame()
-            for n in trange(10_000, desc="Simulando escadas com 50% de chance de subir", unit=" jogo"):
+            for n in trange(1_000, desc="Simulando escadas com 50% de chance de subir", unit=" jogo"):
                 jogo = GameCoditionalClimb(board)
                 vencedor = jogo.jogar()
                 #print(f"\nSimulacao {n} - Vencedor: {vencedor.nome} chegou ou passou da última posição do tabuleiro!")
@@ -63,15 +83,21 @@ def main():
                 df = pd.concat([df, hist])
 
             #df.to_excel('output.xlsx', index=False)
+            turnos_por_simulacao = df.groupby("simulacao")["turno"].count().reset_index()
+            qtd_total_turnos = turnos_por_simulacao['turno'].sum()
+            qtd_jogos = turnos_por_simulacao['simulacao'].max() + 1
+            print(f"Resposta: {qtd_total_turnos/qtd_jogos}")
+
             #print(df.columns)
             #print(df.tail())
 
         elif modo == "4":
             # Lista fixa de posições iniciais do Jogador 2 (pode ser alterada conforme desejar)
             posicoes = [i for i in range(1,board.size+1)]
+            df = pd.DataFrame()
 
             for posicao in posicoes:
-                for n in trange(1_000, desc="Variar posição inicial do jogador 2 e simular múltiplas vezes", unit=" jogo"):
+                for n in trange(1_000, desc=f"Começando com jogador 2 na posição {posicao}...", unit=" jogo"):
 
                     jogo = GameVariableStart(board, posicao)
                     vencedor = jogo.jogar()
@@ -79,27 +105,34 @@ def main():
                 
                     hist = pd.DataFrame(print_historico(jogo))
                     hist['simulacao'] = n
+                    hist['posicao_inicial_jogador_2'] = posicao
                     df = pd.concat([df, hist])
-                df['posicao_inicial_jogador_2'] = posicao
+            #df.to_excel('output.xlsx', index=False)
+            
+            # Filtra apenas as linhas onde o jogador 1 foi o vencedor
+            vitorias_j1 = df[df["vencedor"] == "Jogador 1"]
 
-            print(df.shape)
-            print(df.columns)
-            print(df.tail())
+            # Conta as vitórias por posição inicial do jogador 1
+            contagem = vitorias_j1.groupby("posicao_inicial_jogador_2")["vencedor"].count().reset_index()
+            contagem = contagem.rename(columns={"vencedor": "vencedor_jogador_1"})
+            qtd_jogos = df['simulacao'].max() + 1
+            contagem['prob_vitoria'] = contagem['vencedor_jogador_1'] / qtd_jogos
+            contagem['distancia'] = abs(contagem['prob_vitoria'] - 0.5)
+            contagem = contagem.sort_values(by='distancia', ascending=True)
+            resposta = contagem.iloc[0]['posicao_inicial_jogador_2'].astype(str)
+
+            print(f"Resposta: A posição incial do jogador 2 deveria ser {resposta}")
+            
+
+            # Exibe o resultado
+            contagem.to_excel('output.xlsx', index=False)
+
                 
-
-            for res in jogo_var_start.resultados:
-                print(f"\nJogador 2 começou na posição {res['posicao_inicial_jogador_2']} - Vencedor: {res['vencedor']}")
-                # for evento in res["historico"]:
-                #     print(
-                #         f"Rodada {evento['rodada']:>3} | Turno {evento['turno']:>3} | {evento['jogador']}: "
-                #         f"Dado={evento['dado']} | Posição {evento['posicao_antes']} -> {evento['posicao_final']} "
-                #         f"Evento: {evento['evento']}"
-                #     )
 
 
         elif modo == "5":
             df = pd.DataFrame()
-            for n in trange(10_000, desc="Simulando imunidade à primeira cobra", unit=" jogo"):
+            for n in trange(1_000, desc="Simulando imunidade à primeira cobra", unit=" jogo"):
 
                 jogo = GameImmuneFirstSnake(board)
                 vencedor = jogo.jogar()
@@ -108,6 +141,11 @@ def main():
                 hist = pd.DataFrame(print_historico(jogo))
                 hist['simulacao'] = n
                 df = pd.concat([df, hist])
+
+            vitorias_jogador1 = df[df['vencedor'] == 'Jogador 1'].shape[0]
+            total_jogos = df['simulacao'].max() + 1
+            probabilidade_vitoria_jogador1 = vitorias_jogador1 / total_jogos
+            print(f"Resposta: {probabilidade_vitoria_jogador1}")
 
             #df.to_excel('output.xlsx', index=False)
             #print(df.columns)

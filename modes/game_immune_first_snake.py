@@ -18,7 +18,7 @@ class GameImmuneFirstSnake(GameBase):
         """
         self.board = board
         self.jogadores = [
-            Player("Jogador 1", imune_primeira_cobra=True),
+            Player("Jogador 1", imune_primeira_cobra=False),
             Player("Jogador 2", imune_primeira_cobra=True)
         ]
         self.turno = 0
@@ -31,12 +31,6 @@ class GameImmuneFirstSnake(GameBase):
         pos_antes = jogador.posicao
         dado = rolar_dado()
         pos_dado = pos_antes + dado
-
-        # Se passar do final, fica onde estava
-        if pos_dado > self.board.size:
-            pos_dado = pos_antes
-
-
 
         if self.board.eh_escada(str(pos_dado)):
             pos_final = self.board.ladders[str(pos_dado)]
