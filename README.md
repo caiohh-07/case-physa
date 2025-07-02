@@ -35,6 +35,7 @@ pip install -r requirements.txt
 
 ## 4. 🗂️ Estrutura de pastas do projeto
 
+```
 .
 ├── config/
 │   └── tabuleiro.json          # Configurações do tabuleiro: tamanho, escadas e cobras
@@ -56,6 +57,7 @@ pip install -r requirements.txt
 ├── run_game.py       # Arquivo principal para executar as simulações
 |         
 └── README.md         # Este arquivo
+```
 
 ---
 
