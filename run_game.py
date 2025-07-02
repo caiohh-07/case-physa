@@ -100,7 +100,7 @@ def main():
             # Filtra apenas as linhas onde o jogador 1 foi o vencedor
             vitorias_j1 = df[df["vencedor"] == "Jogador 1"]
 
-            # Conta as vitórias por posição inicial do jogador 2
+            # Conta as vitórias do jogador 1 por posição inicial do jogador 2
             contagem = vitorias_j1.groupby("posicao_inicial_jogador_2")["vencedor"].count().reset_index()
             contagem = contagem.rename(columns={"vencedor": "vencedor_jogador_1"})
             qtd_jogos = df['simulacao'].max() + 1
