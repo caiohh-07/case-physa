@@ -39,7 +39,7 @@ def main():
 
         if modo == "1" or modo == "2":
             df = pd.DataFrame()
-            for n in trange(10_000, desc="Simulando padrão", unit=" jogo"):
+            for n in trange(10_000, desc="Simulando jogo padrão", unit=" jogo"):
                 jogo = GameStandard(board)
                 vencedor = jogo.jogar()
                 #print(f"\nSimulacao {n} - Vencedor: {vencedor.nome} chegou ou passou da última posição do tabuleiro!")
@@ -54,10 +54,10 @@ def main():
                 probabilidade_vitoria_jogador1 = vitorias_jogador1 / total_jogos
                 print(f"Resposta: {probabilidade_vitoria_jogador1}")
             else:
-                numero_cobras = df.value_counts("evento")
+                numero_cobras = df.value_counts("evento").loc['cobra']
                 total_jogos = df['simulacao'].max() + 1
                 
-                print(f"Resposta: {numero_cobras.iloc[1]/total_jogos}")
+                print(f"Resposta: {numero_cobras/total_jogos}")
 
             _ = input("\nPressione Enter para continuar...")       
 
@@ -72,6 +72,7 @@ def main():
                 hist['simulacao'] = n
                 df = pd.concat([df, hist])
 
+            # Numero de lançamento de dados (turnos) por simulação
             turnos_por_simulacao = df.groupby("simulacao")["turno"].count().reset_index()
             qtd_total_turnos = turnos_por_simulacao['turno'].sum()
             qtd_jogos = turnos_por_simulacao['simulacao'].max() + 1
@@ -99,12 +100,18 @@ def main():
             # Filtra apenas as linhas onde o jogador 1 foi o vencedor
             vitorias_j1 = df[df["vencedor"] == "Jogador 1"]
 
-            # Conta as vitórias por posição inicial do jogador 1
+            # Conta as vitórias por posição inicial do jogador 2
             contagem = vitorias_j1.groupby("posicao_inicial_jogador_2")["vencedor"].count().reset_index()
             contagem = contagem.rename(columns={"vencedor": "vencedor_jogador_1"})
             qtd_jogos = df['simulacao'].max() + 1
+
+            # Calcula a probabilidade de vitória do jogador 1 para cada posição inicial do jogador 2
             contagem['prob_vitoria'] = contagem['vencedor_jogador_1'] / qtd_jogos
+
+            # Calcula a distância da probabilidade de vitória do jogador 1 em relação a 0.5
             contagem['distancia'] = abs(contagem['prob_vitoria'] - 0.5)
+
+            # Ordena pela distância e pega a posição inicial do jogador 2 com a menor distância
             contagem = contagem.sort_values(by='distancia', ascending=True)
             resposta = contagem.iloc[0]['posicao_inicial_jogador_2'].astype(str)
 
